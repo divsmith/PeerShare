@@ -15,11 +15,11 @@ var server_conn_open = false;
         server_conn = conn; 
         conn.on('open', function() {
             server_conn_open = true;
-            conn.send('Hello world!');
+            //conn.send('Hello world!');
         })
     });
 
-    console.log('working');
+    //console.log('working');
 
     server = confirm("Server?");
 
@@ -29,9 +29,9 @@ var server_conn_open = false;
         var conn = peer.connect(dest_id);
 
         conn.on('open', function() {
-            console.log('client conn');
+            //console.log('client conn');
             conn.on('data', function(data) {
-                console.log('client data');
+                //console.log('client data');
                 console.log(data);
             });
         });
