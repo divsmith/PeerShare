@@ -30,9 +30,13 @@ var server_conn_open = false;
 
         conn.on('open', function() {
             //console.log('client conn');
-            conn.on('data', function(data) {
+            conn.on('data', function(file) {
                 //console.log('client data');
-                console.log(data);
+                console.log(file.data);
+
+                var download_button = document.getElementById("download");
+                download_button.setAttribute('href', file.data);
+                download_button.setAttribute('download', file.name);
             });
         });
     }
@@ -42,12 +46,17 @@ function sendFile(files) {
     var reader = new FileReader();
 
     reader.onloadend = function() {
-        console.log(reader.result);
+        file = {
+            name: files[0].name,
+            data: reader.result
+        }
+
+        console.log(file);
 
         if (server_conn_open) {
-            server_conn.send(reader.result);
+            server_conn.send(file);
         }
     }
 
-    reader.readAsBinaryString(files[0]);
+    reader.readAsDataURL(files[0]);
 }
