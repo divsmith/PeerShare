@@ -1,4 +1,6 @@
 var peer;
+var server_conn;
+var server_conn_open = false;
 
 (function() {
     var id = (Math.random() + 1).toString(36).substr(6);
@@ -10,7 +12,9 @@ var peer;
     });
 
     peer.on('connection', function(conn) {
+        server_conn = conn; 
         conn.on('open', function() {
+            server_conn_open = true;
             conn.send('Hello world!');
         })
     });
@@ -33,3 +37,17 @@ var peer;
         });
     }
 })();
+
+function sendFile(files) {
+    var reader = new FileReader();
+
+    reader.onloadend = function() {
+        console.log(reader.result);
+
+        if (server_conn_open) {
+            server_conn.send(reader.result);
+        }
+    }
+
+    reader.readAsBinaryString(files[0]);
+}
