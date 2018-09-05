@@ -1,0 +1,6 @@
+.feed {
+    max-height: 300px;
+    overflow-y: scroll;
+    -webkit-overflow-scrolling: touch;
+    margin-top: 20px;
+}
