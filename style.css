@@ -2,5 +2,10 @@
     max-height: 300px;
     overflow-y: scroll;
     -webkit-overflow-scrolling: touch;
-    margin-top: 20px;
+    margin-top: 40px;
+}
+
+#text-input {
+    margin-top: 30px;
+    margin-bottom: 20px;
 }
