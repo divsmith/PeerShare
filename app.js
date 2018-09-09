@@ -21,11 +21,8 @@ var server_conn_open = false;
 
     //console.log('working');
 
-    server = confirm("Server?");
-
-    if (!server) {
-        dest_id = prompt("ID?");
-
+    function connect_to_peer()
+    {
         var conn = peer.connect(dest_id);
 
         conn.on('open', function() {
@@ -37,9 +34,10 @@ var server_conn_open = false;
                 var download_button = document.getElementById("download");
                 download_button.setAttribute('href', file.data);
                 download_button.setAttribute('download', file.name);
-            });
+                });
         });
     }
+        
 })();
 
 function sendFile(files) {
