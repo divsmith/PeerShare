@@ -19,6 +19,10 @@ var server_conn_open = false;
             server_conn_open = true;
             conn.send({"type": "text", "data": "hello world!"});
         })
+
+        conn.on('data', function(data) {
+            write_data(data);
+        })
     });
 
     //console.log('working');
@@ -27,27 +31,40 @@ var server_conn_open = false;
         
 })();
 
+function write_data(data)
+{
+    console.log(data)
+    node = document.createElement('li');
+    text = document.createTextNode(data.data);
+    node.classList.add('list-group-item');
+    node.appendChild(text);
+    document.getElementById('feed').appendChild(node);
+}
+
 function connect_to_peer()
 {
     dest_id = document.getElementById('connect_to_id').value;
 
     var conn = peer.connect(dest_id);
 
+    server_conn = conn;
+
     conn.on('open', function() {
         //console.log('client conn');
         conn.on('data', function(data) {
+            write_data(data);
             //console.log('client data');
             // console.log(file.data);
 
-            // var download_button = document.getElementById("download");
-            // download_button.setAttribute('href', file.data);
-            // download_button.setAttribute('download', file.name);
-                console.log(data)
-                node = document.createElement('li');
-                text = document.createTextNode(data.data);
-                node.classList.add('list-group-item');
-                node.appendChild(text);
-                document.getElementById('feed').appendChild(node);
+            // // var download_button = document.getElementById("download");
+            // // download_button.setAttribute('href', file.data);
+            // // download_button.setAttribute('download', file.name);
+            //     console.log(data)
+            //     node = document.createElement('li');
+            //     text = document.createTextNode(data.data);
+            //     node.classList.add('list-group-item');
+            //     node.appendChild(text);
+            //     document.getElementById('feed').appendChild(node);
             // 
             });
     });
