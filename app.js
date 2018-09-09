@@ -28,30 +28,37 @@ var server_conn_open = false;
 })();
 
 function connect_to_peer()
-    {
-        dest_id = document.getElementById('connect_to_id').value;
+{
+    dest_id = document.getElementById('connect_to_id').value;
 
-        var conn = peer.connect(dest_id);
+    var conn = peer.connect(dest_id);
 
-        conn.on('open', function() {
-            //console.log('client conn');
-            conn.on('data', function(data) {
-                //console.log('client data');
-                // console.log(file.data);
+    conn.on('open', function() {
+        //console.log('client conn');
+        conn.on('data', function(data) {
+            //console.log('client data');
+            // console.log(file.data);
 
-                // var download_button = document.getElementById("download");
-                // download_button.setAttribute('href', file.data);
-                // download_button.setAttribute('download', file.name);
-                    console.log(data)
-                    node = document.createElement('li');
-                    text = document.createTextNode(data.data);
-                    node.classList.add('list-group-item');
-                    node.appendChild(text);
-                    document.getElementById('feed').appendChild(node);
-                // 
-                });
-        });
-    }
+            // var download_button = document.getElementById("download");
+            // download_button.setAttribute('href', file.data);
+            // download_button.setAttribute('download', file.name);
+                console.log(data)
+                node = document.createElement('li');
+                text = document.createTextNode(data.data);
+                node.classList.add('list-group-item');
+                node.appendChild(text);
+                document.getElementById('feed').appendChild(node);
+            // 
+            });
+    });
+}
+
+function sendText()
+{
+    text = document.getElementById('text');
+    server_conn.send({"type": "text", "data": text.value});
+    text.value = '';
+}
 
 function sendFile(files) {
     var reader = new FileReader();
