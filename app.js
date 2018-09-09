@@ -25,17 +25,19 @@ var server_conn_open = false;
 
     function connect_to_peer()
     {
+        dest_id = document.getElementById('connect_to_id').value;
+
         var conn = peer.connect(dest_id);
 
         conn.on('open', function() {
             //console.log('client conn');
             conn.on('data', function(file) {
                 //console.log('client data');
-                console.log(file.data);
+                // console.log(file.data);
 
-                var download_button = document.getElementById("download");
-                download_button.setAttribute('href', file.data);
-                download_button.setAttribute('download', file.name);
+                // var download_button = document.getElementById("download");
+                // download_button.setAttribute('href', file.data);
+                // download_button.setAttribute('download', file.name);
                 });
         });
     }
