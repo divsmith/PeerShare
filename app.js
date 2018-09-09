@@ -72,9 +72,14 @@ function connect_to_peer()
 
 function sendText()
 {
-    text = document.getElementById('text');
-    server_conn.send({"type": "text", "data": text.value});
-    text.value = '';
+    text_element = document.getElementById('text');
+    data = {
+        "type": "text",
+        "data": text_element.value
+    }
+    server_conn.send(data);
+    write_data(data); // Write the data the sent data to the sender's screen
+    text_element.value = '';
 }
 
 function sendFile(files) {
