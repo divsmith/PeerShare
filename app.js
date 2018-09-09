@@ -17,7 +17,7 @@ var server_conn_open = false;
         server_conn = conn; 
         conn.on('open', function() {
             server_conn_open = true;
-            conn.send('Hello world!');
+            conn.send({"type": "text", "data": "hello world!"});
         })
     });
 
@@ -42,7 +42,13 @@ function connect_to_peer()
                 // var download_button = document.getElementById("download");
                 // download_button.setAttribute('href', file.data);
                 // download_button.setAttribute('download', file.name);
-                console.log(data)
+                    console.log(data)
+                    node = document.createElement('li');
+                    text = document.createTextNode(data.data);
+                    node.classList.add('list-group-item');
+                    node.appendChild(text);
+                    document.getElementById('feed').appendChild(node);
+                // 
                 });
         });
     }
