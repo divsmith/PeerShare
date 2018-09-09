@@ -26,10 +26,17 @@ var server_conn_open = false;
     });
 
     //console.log('working');
-
-    
         
 })();
+
+function text_key_press(event)
+{
+    if (event.keyCode == 13)
+    {
+        console.log('keycode');
+        sendText();
+    }
+}
 
 function write_data(data)
 {
