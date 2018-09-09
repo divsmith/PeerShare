@@ -17,13 +17,17 @@ var server_conn_open = false;
         server_conn = conn; 
         conn.on('open', function() {
             server_conn_open = true;
-            //conn.send('Hello world!');
+            conn.send('Hello world!');
         })
     });
 
     //console.log('working');
 
-    function connect_to_peer()
+    
+        
+})();
+
+function connect_to_peer()
     {
         dest_id = document.getElementById('connect_to_id').value;
 
@@ -31,18 +35,17 @@ var server_conn_open = false;
 
         conn.on('open', function() {
             //console.log('client conn');
-            conn.on('data', function(file) {
+            conn.on('data', function(data) {
                 //console.log('client data');
                 // console.log(file.data);
 
                 // var download_button = document.getElementById("download");
                 // download_button.setAttribute('href', file.data);
                 // download_button.setAttribute('download', file.name);
+                console.log(data)
                 });
         });
     }
-        
-})();
 
 function sendFile(files) {
     var reader = new FileReader();
