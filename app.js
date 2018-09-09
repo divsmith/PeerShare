@@ -8,6 +8,8 @@ var server_conn_open = false;
     peer = new Peer(id);
 
     peer.on('open', function(id) {
+        id_element = document.getElementById('peerID');
+        id_element.innerHTML = id;
         console.log('id: ' + id);
     });
 
