@@ -18,11 +18,11 @@ var server_conn_open = false;
         conn.on('open', function() {
             server_conn_open = true;
             conn.send({"type": "text", "data": "hello world!"});
-        })
+        });
 
         conn.on('data', function(data) {
             write_data(data);
-        })
+        });
     });
 
     //console.log('working');
@@ -80,6 +80,7 @@ function connect_to_peer()
     var conn = peer.connect(dest_id);
 
     server_conn = conn;
+    server_conn_open = true;
 
     conn.on('open', function() {
         //console.log('client conn');
@@ -128,6 +129,7 @@ function sendFile(files) {
 
         if (server_conn_open) {
             server_conn.send(data);
+            write_data(data);
         }
     }
 
