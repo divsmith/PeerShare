@@ -41,11 +41,20 @@ function text_key_press(event)
 function write_data(data)
 {
     console.log(data)
-    node = document.createElement('li');
-    text = document.createTextNode(data.data);
-    node.classList.add('list-group-item');
-    node.appendChild(text);
-    document.getElementById('feed').appendChild(node);
+    switch(data.type)
+    {
+        case "text": {
+            node = document.createElement('li');
+            text = document.createTextNode(data.data);
+            node.classList.add('list-group-item');
+            node.appendChild(text);
+            document.getElementById('feed').appendChild(node);
+        }
+
+        case "file": {
+            
+        }
+    }
 }
 
 function connect_to_peer()
