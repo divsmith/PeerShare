@@ -49,10 +49,26 @@ function write_data(data)
             node.classList.add('list-group-item');
             node.appendChild(text);
             document.getElementById('feed').appendChild(node);
+            break;
         }
 
         case "file": {
-            
+            node = document.createElement('li');
+            text = document.createTextNode(data.name);
+            node.classList.add('list-group-item');
+            node.appendChild(text);
+
+            button = document.createElement('a');
+            button.classList.add('btn');
+            button.classList.add('btn-success');
+            button.classList.add('float-right');
+            button.appendChild(document.createTextNode('Download'));
+            button.setAttribute('href', data.data);
+            button.setAttribute('download', data.name);
+            node.appendChild(button);
+
+            document.getElementById('feed').appendChild(node);
+            break;
         }
     }
 }
@@ -102,15 +118,16 @@ function sendFile(files) {
     var reader = new FileReader();
 
     reader.onloadend = function() {
-        file = {
-            name: files[0].name,
-            data: reader.result
+        data = {
+            "type": "file",
+            "name": files[0].name,
+            "data": reader.result
         }
 
-        console.log(file);
+        console.log(data);
 
         if (server_conn_open) {
-            server_conn.send(file);
+            server_conn.send(data);
         }
     }
 
