@@ -1,29 +1,48 @@
 <script lang="ts">
     import Crypto from 'crypto-js';
     import type { DataConnection } from 'peerjs';
-import type Peer from 'peerjs';
+    import type Peer from 'peerjs';
     import { onMount } from 'svelte';
 
     let peer: Peer;
     let conn: DataConnection;
-    let peerID: string = '';
-    let serverPeerId: string = ''
+    let myId: string = '';
+    let peerId: string = ''
+    let connected: boolean = false;
 
     let input: string = '';
-    let messages = ['first', 'second', 'third', 'fourth', 'fifth'];
+    let messages = [];
 
     function sendMessage() {
         messages = [...messages, input];
+
+        if (conn) {
+            conn.send(input);
+        } else {
+            console.log('no peer connection');
+        }
+
         input = '';
     }
 
     function connectToPeer() {
         if (peer) {
-            conn = peer.connect(serverPeerId);
+            conn = peer.connect(peerId);
             conn.on('open', () => {
-                conn.send('hello!');
+                connected = true;
             });
+            conn.on('close', () => {
+                connected = false;
+            });
+
+            conn.on('data', accept);
+        } else {
+            console.error('Unable to load Peer');
         }
+    }
+
+    function accept(data) {
+        messages = [...messages, data];
     }
 
     // let password: String = '';
@@ -41,19 +60,17 @@ import type Peer from 'peerjs';
 
     onMount(async() => {
         const { Peer } = await import('peerjs');
-
-        // const peer = new Peer();
-        // peer.on('open', function(id) {
-        //     peerID = id;
-        // });
         peer = new Peer();
         peer.on('open', function(id) {
-            peerID = id;
+            myId = id;
         });
 
-        peer.on('connection', (conn) => {
-            conn.on('data', (data) => {
-                messages = [...messages, data];
+        peer.on('connection', (connection) => {
+            conn = connection;
+            connected = true;
+            conn.on('data', accept);
+            conn.on('close', () => {
+                connected = false
             });
         })
     });
@@ -82,19 +99,23 @@ import type Peer from 'peerjs';
         </form>
     </div>
 
-    <div class="input mt-20">
-        <form class="row row-cols-lg-auto g-3">
-            <p>{peerID}</p>
-            <div class="col-12">
-                <label class="visually-hidden" for="peer-id">Peer ID</label>
-                <input bind:value={serverPeerId} type="text" class="form-control" id="peer-id" placeholder="Peer ID"/>
-            </div>
+    {#if !connected} 
+        <div class="input mt-20">
+            <form class="row row-cols-lg-auto g-3">
+                <div class="col-12">
+                    <p>{myId}</p>
+                </div>
+                <div class="col-12">
+                    <label class="visually-hidden" for="peer-id">Peer ID</label>
+                    <input bind:value={peerId} type="text" class="form-control" id="peer-id" placeholder="Peer ID"/>
+                </div>
 
-            <div class="col-12">
-                <button on:click|preventDefault={connectToPeer} class="btn btn-primary">Connect to Peer</button>
-            </div>
-        </form>
-    </div>
+                <div class="col-12">
+                    <button on:click|preventDefault={connectToPeer} class="btn btn-primary">Connect to Peer</button>
+                </div>
+            </form>
+        </div>
+    {/if}
 </div>
 
 <!-- <div class="container">
