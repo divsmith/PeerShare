@@ -1,129 +1,117 @@
 <script lang="ts">
-    import Crypto from 'crypto-js';
-    import type { DataConnection } from 'peerjs';
-    import type Peer from 'peerjs';
-    import { onMount } from 'svelte';
+	import Crypto from 'crypto-js';
+	import type { DataConnection } from 'peerjs';
+	import type Peer from 'peerjs';
+	import { onMount } from 'svelte';
 
-    let peer: Peer;
-    let conn: DataConnection;
-    let myId: string = '';
-    let peerId: string = ''
-    let connected: boolean = false;
+		// let password: String = '';
+	// let decrypt: String = '';
+	// let decrypted: String = '';
 
-    let input: string = '';
-    let messages = [];
+	// $: ciphertext = Crypto.AES.encrypt(input, password).toString();
+	// $: {
+	//     try {
+	//         decrypted = Crypto.AES.decrypt(ciphertext, decrypt).toString(Crypto.enc.Utf8);
+	//     } catch(err) {
+	//         decrypted = '';
+	//     }
+	// }
 
-    function sendMessage() {
-        messages = [...messages, input];
+	let peer: Peer;
+	let conn: DataConnection;
+	let myId: string = '';
+	let peerId: string = '';
+	let connected: boolean = false;
 
-        if (conn) {
-            conn.send(input);
-        } else {
-            console.log('no peer connection');
-        }
+	let input: string = '';
+	let messages = [];
 
-        input = '';
-    }
+	function sendMessage() {
+		messages = [...messages, input];
 
-    function connectToPeer() {
-        if (peer) {
-            conn = peer.connect(peerId);
-            conn.on('open', () => {
-                connected = true;
-            });
-            conn.on('close', () => {
-                connected = false;
-            });
+		if (conn) {
+			conn.send(input);
+		} else {
+			console.log('no peer connection');
+		}
 
-            conn.on('data', accept);
-        } else {
-            console.error('Unable to load Peer');
-        }
-    }
+		input = '';
+	}
 
-    function accept(data) {
-        messages = [...messages, data];
-    }
+	function connectToPeer() {
+		if (peer) {
+			conn = peer.connect(peerId);
+			conn.on('open', () => {
+				connected = true;
+			});
+			conn.on('close', () => {
+				connected = false;
+			});
 
-    // let password: String = '';
-    // let decrypt: String = '';
-    // let decrypted: String = '';
+			conn.on('data', accept);
+		} else {
+			console.error('Unable to load Peer');
+		}
+		
+		peerId = '';
+	}
 
-    // $: ciphertext = Crypto.AES.encrypt(input, password).toString();
-    // $: {
-    //     try {
-    //         decrypted = Crypto.AES.decrypt(ciphertext, decrypt).toString(Crypto.enc.Utf8);
-    //     } catch(err) {
-    //         decrypted = '';
-    //     }
-    // }
+	function accept(data) {
+		messages = [...messages, data];
+	}
 
-    onMount(async() => {
-        const { Peer } = await import('peerjs');
-        peer = new Peer();
-        peer.on('open', function(id) {
-            myId = id;
-        });
+	onMount(async () => {
+		const { Peer } = await import('peerjs');
+		peer = new Peer();
+		peer.on('open', function (id) {
+			myId = id;
+		});
 
-        peer.on('connection', (connection) => {
-            conn = connection;
-            connected = true;
-            conn.on('data', accept);
-            conn.on('close', () => {
-                connected = false
-            });
-        })
-    });
-
+		peer.on('connection', (connection) => {
+			conn = connection;
+			connected = true;
+			conn.on('data', accept);
+			conn.on('close', () => {
+				connected = false;
+			});
+		});
+	});
 </script>
 
-<div class="container">
-    <div class="feed mt-20">
-        <ul class="list-group">
-            {#each messages as message}
-               <li class="list-group-item">{message}</li> 
-            {/each}
-        </ul>
-    </div>
-
-    <div class="input mt-20">
-        <form class="row row-cols-lg-auto g-3">
-            <div class="col-12">
-                <label class="visually-hidden" for="input">Enter text</label>
-                <input bind:value={input} type="text" class="form-control" id="input" placeholder="Enter text"/>
-            </div>
-
-            <div class="col-12">
-                <button on:click|preventDefault={sendMessage} class="btn btn-primary">Send</button>
-            </div>
-        </form>
-    </div>
-
-    {#if !connected} 
-        <div class="input mt-20">
-            <form class="row row-cols-lg-auto g-3">
-                <div class="col-12">
-                    <p>{myId}</p>
-                </div>
-                <div class="col-12">
-                    <label class="visually-hidden" for="peer-id">Peer ID</label>
-                    <input bind:value={peerId} type="text" class="form-control" id="peer-id" placeholder="Peer ID"/>
-                </div>
-
-                <div class="col-12">
-                    <button on:click|preventDefault={connectToPeer} class="btn btn-primary">Connect to Peer</button>
-                </div>
-            </form>
-        </div>
-    {/if}
+<div class="container mx-auto max-w-xl">
+	{#if !connected}
+	<div class="rounded-lg bg-slate-300 p-6 mt-20 shadow-sm">
+		<p class="m-5">{myId}</p>
+		<form on:submit|preventDefault={connectToPeer}>
+			<input
+				class="mx-5 p-2 rounded-lg outline-none"
+				type="text"
+				bind:value={peerId}
+			/>
+			<button
+				class="bg-sky-400 text-white py-2 px-5 rounded-lg
+						hover:bg-sky-600 active:bg-sky-900
+						transition duration-150"
+			>Connect</button>
+		</form>
+	</div>
+	{:else}
+	<div class="rounded-lg bg-slate-300 p-6 mt-20 shadow-sm">
+		{#each messages as message}
+			<p class="mx-5">{message}</p>
+		{/each}
+		<form on:submit|preventDefault={sendMessage}>
+			<input
+				class="m-5 p-2 rounded-lg outline-none"
+				type="text"
+				bind:value={input}
+			/>
+			<button
+				class="bg-sky-400 text-white py-2 px-5 rounded-lg
+						hover:bg-sky-600 active:bg-sky-900
+						transition duration-150"
+			>Send</button>
+		</form>
+	</div>
+	{/if}
 </div>
-
-<!-- <div class="container">
-    <form class="mt-20">
-        <p class="mb-3">Peer ID: {peerID}</p>
-        <div>
-            <label for="password" class="form-label">Password</label>
-            <input bind:value={password} type="text" id="password" class="form-control"/>
-        </div>
-    </form>
-</div> -->
