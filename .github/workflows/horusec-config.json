@@ -1,6 +1,6 @@
 {
     "horusecCliPrintoutputType": "json",
-    "horusecJsonOutputFilepath": "horusec-report.json",
+    "horusecCliJsonOutputFilepath": "./horusec-report.json",
     "horusecCliReturnErrorIfFoundVulnerability": "true",
     "horusecCliFilesOrPathsToIgnore": [
         "./github/workflows**"
