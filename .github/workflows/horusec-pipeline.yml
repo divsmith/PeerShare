@@ -11,7 +11,7 @@ on:
         
 jobs:
   horusec-security:
-    name: horusec-security
+    name: Horusec
     runs-on: ubuntu-latest
     steps:
     - name: Check out code
@@ -22,7 +22,7 @@ jobs:
       run: |
         curl -fsSL https://raw.githubusercontent.com/ZupIT/horusec/main/deployments/scripts/install.sh | bash -s latest
         # horusec start -p="./" -e="true" -o="json" -O="./horusec-report.json"
-        horusec start --config-file-path=".github/workflows/horusec-config.json"
+        horusec start -p="./" --config-file-path=".github/workflows/horusec-config.json"
     - name: Upload Horusec Report
       if: always()
       uses: actions/upload-artifact@v3.1.0
